@@ -1,11 +1,8 @@
 const botconfig = require("./botconfig.json");
 const Discord = require("discord.js");
 const mongoose = require('mongoose');
-const Guild = require('./models/guild');
 const Player = require('./models/player');
 const Map = require('./models/map')
-const { Issuer } = require('openid-client');
-const map = require("./models/map");
 var XMLHttpRequest = require('xhr2');
 
 const bot = new Discord.Client({disableEveryone: true});
