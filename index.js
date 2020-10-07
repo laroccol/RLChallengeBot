@@ -22,7 +22,7 @@ const STEAM_IDS = {
     "187022616933040128": {platform: "steam", id: "76561198107782432", displayName: "Alerath"}, //alerath
     "428392024014716939": {platform: "steam", id: "76561198278263410", displayName: "BubblyReaper"}, //bubblyreaper
     "205516926208835584": {platform: "steam", id: "76561198062410935", displayName: "DarkBlader"}, //darkblader
-    //"116334685872717829": {platform: "steam", id: ""}, //krim
+    "116334685872717829": {platform: "steam", id: "76561198070847183", displayName: "Krim"}, //krim
     "145013723935932416": {platform: "steam", id: "76561198052637143", displayName: "LukedaSloth"}, //lukedasloth
     "430417029158141954": {platform: "steam", id: "76561198311856585", displayName: "Mdlittl"}, //mdlittle
     "751491479888986204": {platform: "xbl", id: "mrmustacheman21", displayName: "MrMustacheMan"}, //mrmustacheman
