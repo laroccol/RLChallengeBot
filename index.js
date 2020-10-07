@@ -455,7 +455,7 @@ bot.on("message", async (message) => {
     messageArray = message.content.split(" ");
     if (message.channel.id === REPORT_CHANNEL_ID) {
         if (message.content.startsWith(`${PREFIX}add_challenge`)) {
-            if (messageArray.length === 4 && message.member.permissions.has("ADMINISTRATOR")) {
+            if (messageArray.length === 4 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
                 await AddMapToDatabase(messageArray[1], messageArray[2], messageArray[3], message.channel);
             } else {
                 if (message.member.permissions.has("ADMINISTRATOR")) {
@@ -465,10 +465,10 @@ bot.on("message", async (message) => {
                 }
             }
         } else if (message.content.startsWith(`${PREFIX}remove_challenge`)) {
-            if (messageArray.length === 2 && message.member.permissions.has("ADMINISTRATOR")) {
+            if (messageArray.length === 2 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
                 await RemoveMapFromDatabase(messageArray[1], message.channel);
             } else {
-                if (message.member.permissions.has("ADMINISTRATOR")) {
+                if (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416") {
                     message.channel.send(CreateErrorEmbed("Invalid format"));
                 } else {
                     message.channel.send(CreateErrorEmbed("You must be an Admin to remove challenges"));
@@ -501,7 +501,7 @@ bot.on("message", async (message) => {
                 await GetIndividualMMRChange(message.member.user.id, message.channel);
             }
         } else if (message.content.startsWith(`${PREFIX}start`)) {
-            if (messageArray.length === 1 && message.member.permissions.has("ADMINISTRATOR")) {
+            if (messageArray.length === 1 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
                 await UpdateMMRChanges(message.channel, true);
             } else {
                 if (message.member.permissions.has("ADMINISTRATOR")) {
