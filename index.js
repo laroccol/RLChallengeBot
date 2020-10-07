@@ -37,7 +37,8 @@ const STEAM_IDS = {
     //"415905713810964481": {platform: "steam", id: ""}, //panoramicrain
     "266001817744179200": {platform: "steam", id: "76561198123365718",displayName: "PillowRL"}, //pillowrl
     //"415964836342792213": {platform: "steam", id: ""}, //tgibbs
-    "440249598326341632": {platform: "steam", id: "76561198128189081", displayName: "_Billy"} //underscorebilly
+    "440249598326341632": {platform: "steam", id: "76561198128189081", displayName: "_Billy"}, //underscorebilly
+    "130796291650224128": {platform: "steam", id: "76561197982782157", displayName: "Watabou/Divinegon"}
 }
 
 function GetCurrentTime() {
@@ -228,8 +229,7 @@ async function UpdateMMRChanges(channel, start) {
 
     if (start) {
         var date = new Date();
-        date.toDateString();
-        await Map.updateOne({mapName: "Ub&7|Bh$5(w?P2m"}, {startDate: date.toDateString()});
+        await Map.updateOne({mapName: "Ub&7|Bh$5(w?P2m"}, {startDate: date.toLocaleString("en-US", {timeZone: "America/Los_Angeles"})});
     }
 
     await Player.find({startMMR: { $gte: 1}})
