@@ -222,14 +222,14 @@ async function UpdateMMRChanges(channel, start) {
         }
         count += 1
         if (count === 3) {
-            await standBy.edit(`Please Stand By ${Math.floor(percent)}`);
+            await standBy.edit(`Please Stand By ${Math.floor(percent)}%`);
             count = 0;
         }
     }
 
     if (start) {
         var date = new Date();
-        await Map.updateOne({mapName: "Ub&7|Bh$5(w?P2m"}, {startDate: date.toLocaleString("en-US", {timeZone: "America/Los_Angeles"})});
+        await Map.updateOne({mapName: "Ub&7|Bh$5(w?P2m"}, {startDate: date.toLocaleString("en-US", {timeZone: "America/Chicago"})});
     }
 
     await Player.find({startMMR: { $gte: 1}})
