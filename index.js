@@ -27,7 +27,7 @@ const STEAM_IDS = {
     "430417029158141954": {platform: "steam", id: "76561198311856585", displayName: "Mdlittl"}, //mdlittle
     "751491479888986204": {platform: "xbl", id: "mrmustacheman21", displayName: "MrMustacheMan"}, //mrmustacheman
     "388369130065231875": {platform: "steam", id: "76561198829977115", displayName: "Siick"}, //siick
-    //"476657861758418944": {platform: "steam", id: ""}, //tjthemasterman
+    "476657861758418944": {platform: "steam", id: "76561198814882047", displayName: "tjthemasterman"}, //tjthemasterman
     "279809802463608832": {platform: "steam", id: "76561198067732842", displayName: "yolkk"}, //yolkk
     "143094404608032768": {platform: "steam", id: "76561198049480636", displayName: "zader"}, //zader
     "405730384786227200": {platform: "steam", id: "76561199084736827", displayName: "bjtrutt"}, //bjtrutt
