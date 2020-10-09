@@ -107,7 +107,7 @@ async function DoesMapExist(name) {
 async function ShowChallenges(channel) {
     var embed = CreateSuccessEmbed("Challenges");
     var result = await GetAllChallenges();
-    if (result) {
+    if (result && result.length !== 0) {
         result.forEach((challenge) => {
             if (challenge.mapName) {
                 embed.addField(`${challenge.mapName}`, `Input type: ${challenge.inputType}`);
@@ -143,7 +143,7 @@ async function GenerateLeaderboard(map, channel) {
         let embed = new Discord.MessageEmbed()
             .setTitle(`__**${map}**__ leaderboard`);
 
-        if (!results) {
+        if (!results || results.length === 0) {
             embed.setColor("RED");
             embed.addField("No Data Found", "There are either no entries or something went wrong");
         } else if (results.length < 5) {
