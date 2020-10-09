@@ -6,7 +6,8 @@ const playerSchema = mongoose.Schema({
     displayName: String,
     times: Object,
     startMMR: Number,
-    currentMMR: Number
+    currentMMR: Number,
+    points: Number
 });
 
 module.exports = mongoose.model('Player', playerSchema, "players");

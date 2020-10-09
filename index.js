@@ -11,8 +11,8 @@ bot.mongoose = require('./utils/mongoose');
 
 const PREFIX = "!";
 
-const REPORT_CHANNEL_ID = "763218464025870337";
-const LEADERBOARD_CHANNEL_ID = "763218194491899934";
+const REPORT_CHANNEL_IDS = ["763218464025870337", "760722612304740352"];
+const LEADERBOARD_CHANNEL_IDS = ["763218194491899934", "760723745701625899"];
 const MMR_CHANNEL_ID = "761050538300801056";
 
 const INPUT_TYPES = ["time", "score"];
@@ -69,29 +69,25 @@ async function AddMapToDatabase(name, newInputType, newSortOrder, channel) {
         channel.send(CreateErrorEmbed("Invalid Input"));
         return;
     }
-    await Map.findOne({
-        mapName: name
-    }, (err, result) => {
-        if (err) console.error(err);
-        if (!result) {
-            var map = new Map({
-                _id: mongoose.Types.ObjectId(),
-                mapName: name,
-                inputType: newInputType,
-                sortOrder: parseInt(newSortOrder)
-            });
+    var result = DoesMapExist(name);
+    if (!result) {
+        var map = new Map({
+            _id: mongoose.Types.ObjectId(),
+            mapName: name,
+            inputType: newInputType,
+            sortOrder: parseInt(newSortOrder)
+        });
 
-            map.save()
-                .then(result => console.log(result))
-                .catch(err => console.error(err));
+        map.save()
+            .then(result => console.log(result))
+            .catch(err => console.error(err));
 
-            channel.send(CreateSuccessEmbed(`Successfully added challenge __**${name}**__`));
+        channel.send(CreateSuccessEmbed(`Successfully added challenge __**${name}**__`));
 
-            console.log("A challenge has been added to the database!");
-        } else {
-            channel.send(CreateErrorEmbed(`The challenge name __**${name}**__ already exists`))
-        }
-    });
+        console.log("A challenge has been added to the database!");
+    } else {
+        channel.send(CreateErrorEmbed(`The challenge name __**${name}**__ already exists`))
+    }
 }
 
 async function RemoveMapFromDatabase(name, channel) {
@@ -110,18 +106,16 @@ async function DoesMapExist(name) {
 
 async function ShowChallenges(channel) {
     var embed = CreateSuccessEmbed("Challenges");
-    await Map.find({startDate: { $exists: false}}, (err, result) => {
-        if (result.length === 0) {
-            embed = CreateErrorEmbed("No Challenges Available");
-        } else {
-            result.forEach((challenge) => {
-                if (challenge.mapName) {
-                    embed.addField(`${challenge.mapName}`, `Input type: ${challenge.inputType}`);
-                }
-            });
-        }
-    });
-
+    var result = await GetAllChallenges();
+    if (result) {
+        result.forEach((challenge) => {
+            if (challenge.mapName) {
+                embed.addField(`${challenge.mapName}`, `Input type: ${challenge.inputType}`);
+            }
+        });
+    } else {
+        embed = CreateErrorEmbed("No Challenges Available");
+    }
     channel.send(embed);
 }
 
@@ -132,6 +126,11 @@ function CheckMapParameter(newInputType, newSortOrder) {
     return true;
 }
 
+async function GetAllChallenges() {
+    var challenges = await Map.find({ startDate: { $exists: false}});
+    return challenges;
+}
+
 // -------------------------------------------------------------------------------------------------
 
 //LeaderBoards
@@ -140,42 +139,45 @@ function CheckMapParameter(newInputType, newSortOrder) {
 async function GenerateLeaderboard(map, channel) {
     var actualMap = await Map.findOne({mapName: map});
     if (actualMap) {
-        myString = `times.${map}`;
-        Player.aggregate([{
-            "$match": {
-                [myString]: { $exists: true}
-            }
-        }, {
-            "$sort": {
-                [myString]: actualMap.sortOrder
-            }
-        }], async (err, res) => {
-            if (err) console.error(err);
-            let embed = new Discord.MessageEmbed()
-                .setTitle(`__**${map}**__ leaderboard`);
+        var results = await GetChallengeStandings(actualMap);
+        let embed = new Discord.MessageEmbed()
+            .setTitle(`__**${map}**__ leaderboard`);
 
-            if (res.length === 0) {
-                embed.setColor("RED");
-                embed.addField("No Data Found", "There are either no entries or something went wrong");
-            } else if (res.length < 5) {
-                for (i = 0; i < res.length; i++) {
-                    var displayValue = await parseChallengeValue(res[i].times[map], map);
-                    embed.setColor("GOLD");
-                    embed.addField(`${i + 1}. ${res[i].displayName}`, displayValue);
-                }
-            } else {
-                for (i = 0; i < 5; i++) {
-                    var displayValue = await parseChallengeValue(res[i].times[map], map);
-                    embed.setColor("GOLD");
-                    embed.addField(`${i + 1}. ${res[i].displayName}`, displayValue);
-                }
+        if (!results) {
+            embed.setColor("RED");
+            embed.addField("No Data Found", "There are either no entries or something went wrong");
+        } else if (results.length < 5) {
+            for (i = 0; i < results.length; i++) {
+                var displayValue = await parseChallengeValue(results[i].times[map], map);
+                embed.setColor("GOLD");
+                embed.addField(`${i + 1}. ${results[i].displayName}`, displayValue);
             }
+        } else {
+            for (i = 0; i < 5; i++) {
+                var displayValue = await parseChallengeValue(results[i].times[map], map);
+                embed.setColor("GOLD");
+                embed.addField(`${i + 1}. ${results[i].displayName}`, displayValue);
+            }
+        }
 
-            channel.send(embed);
-        });
+        channel.send(embed);
     } else {
         channel.send(CreateErrorEmbed(`The challenge name __**${map}**__ does not exist`));
     }
+}
+
+async function GetChallengeStandings(actualMap) {
+    myString = `times.${map}`;
+    var standings = await Player.aggregate([{
+        "$match": {
+            [myString]: { $exists: true}
+        }
+    }, {
+        "$sort": {
+            [myString]: actualMap.sortOrder
+        }
+    }]);
+    return standings;
 }
 
 async function UpdateMMRChanges(channel, start) {
@@ -201,6 +203,7 @@ async function UpdateMMRChanges(channel, start) {
                 times: {_origin: 1},
                 startMMR: 0,
                 currentMMR: 0,
+                points: 0
             });
         
             await newPlayer.save()
@@ -389,6 +392,7 @@ async function UpdateDatabaseField(member, map, value, channel) {
             times: {_origin: 1},
             startMMR: 0,
             currentMMR: 0,
+            points: 0
         });
     
         await newPlayer.save()
@@ -443,6 +447,39 @@ function parseInput(value, inputType) {
 
 // -------------------------------------------------------------------------------------------------
 
+//End Cycle
+// -------------------------------------------------------------------------------------------------
+
+async function EndCycle(channel) {
+    var challenges = await GetAllChallenges();
+    var embed = CreateSuccessEmbed("Results");
+    if (challenges) {
+        challenges.forEach((challenge) => {
+            var standings = await GetChallengeStandings(challenge);
+            if (standings) {
+                count = 0;
+                standings.forEach((player) => {
+                    await AddPointsToPlayer(player);
+                    if (count >= 2) {
+                        break;
+                    }
+                    count += 1;
+                });
+            }
+        });
+    }
+}
+
+async function AddPointsToPlayer(player, inPoints) {
+    if (player) {
+        var id = player.playerID;
+        var newPoints = player.points + inPoints;
+        await Player.updateOne({ playerID: id}, { points: newPoints});
+    }
+}
+
+// -------------------------------------------------------------------------------------------------
+
 //Event Handlers
 // -------------------------------------------------------------------------------------------------
 
@@ -453,7 +490,7 @@ bot.on("ready", async () => {
 
 bot.on("message", async (message) => {
     messageArray = message.content.split(" ");
-    if (message.channel.id === REPORT_CHANNEL_ID) {
+    if (REPORT_CHANNEL_IDS.includes(message.channel.id)) {
         if (message.content.startsWith(`${PREFIX}add_challenge`)) {
             if (messageArray.length === 4 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
                 await AddMapToDatabase(messageArray[1], messageArray[2], messageArray[3], message.channel);
@@ -482,7 +519,7 @@ bot.on("message", async (message) => {
         }
     }
 
-    if (message.channel.id === LEADERBOARD_CHANNEL_ID) {
+    if (LEADERBOARD_CHANNEL_IDS.includes(message.channel.id)) {
         //GetPlayerTime(message.member.user.id, messageArray[0]);
         if (message.content.startsWith(`${PREFIX}standings`)) {
             if (messageArray.length === 2) {
@@ -503,6 +540,16 @@ bot.on("message", async (message) => {
         } else if (message.content.startsWith(`${PREFIX}start`)) {
             if (messageArray.length === 1 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
                 await UpdateMMRChanges(message.channel, true);
+            } else {
+                if (message.member.permissions.has("ADMINISTRATOR")) {
+                    message.channel.send(CreateErrorEmbed("Invalid format"));
+                } else {
+                    message.channel.send(CreateErrorEmbed("You must be an Admin to start"));
+                }
+            }
+        } else if (message.content.startsWith(`${PREFIX}end`)) {
+            if (messageArray.length === 1 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
+                await EndCycle(message.channel);
             } else {
                 if (message.member.permissions.has("ADMINISTRATOR")) {
                     message.channel.send(CreateErrorEmbed("Invalid format"));
