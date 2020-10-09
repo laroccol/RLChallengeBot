@@ -454,19 +454,19 @@ async function EndCycle(channel) {
     var challenges = await GetAllChallenges();
     var embed = CreateSuccessEmbed("Results");
     if (challenges) {
-        challenges.forEach((challenge) => {
+        for (const challenge of challenges) {
             var standings = await GetChallengeStandings(challenge);
             if (standings) {
                 count = 0;
-                standings.forEach((player) => {
+                for (const player of standings) {
                     await AddPointsToPlayer(player);
                     if (count >= 2) {
                         break;
                     }
                     count += 1;
-                });
+                }
             }
-        });
+        }
     }
 }
 
