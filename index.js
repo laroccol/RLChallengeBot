@@ -167,7 +167,7 @@ async function GenerateLeaderboard(map, channel) {
 }
 
 async function GetChallengeStandings(actualMap) {
-    myString = `times.${map}`;
+    myString = `times.${map.mapName}`;
     var standings = await Player.aggregate([{
         "$match": {
             [myString]: { $exists: true}
