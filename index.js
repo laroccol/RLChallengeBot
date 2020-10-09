@@ -459,7 +459,7 @@ async function EndCycle(channel) {
             if (standings) {
                 count = 0;
                 for (const player of standings) {
-                    await AddPointsToPlayer(player);
+                    await AddPointsToPlayer(player, 100);
                     if (count >= 2) {
                         break;
                     }
