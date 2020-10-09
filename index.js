@@ -69,8 +69,8 @@ async function AddMapToDatabase(name, newInputType, newSortOrder, channel) {
         channel.send(CreateErrorEmbed("Invalid Input"));
         return;
     }
-    var result = DoesMapExist(name);
-    if (!result) {
+    var result = await DoesMapExist(name);
+    if (!result || result === null) {
         var map = new Map({
             _id: mongoose.Types.ObjectId(),
             mapName: name,
