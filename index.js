@@ -34,7 +34,7 @@ const STEAM_IDS = {
     "149996316334882816": {platform: "steam", id: "76561198008893298", displayName: "BoomWizard"}, //boomwizard
     "299694944988430336": {platform: "steam", id: "76561198830139605", displayName: "GusBus"}, //gusbus
     "245753756107538443": {platform: "steam", id: "76561198838366815", displayName: "Kelpo"}, //kelpo
-    //"415905713810964481": {platform: "steam", id: ""}, //panoramicrain
+    "415905713810964481": {platform: "steam", id: "76561198845186862", displayName: "PanoramicRain"}, //panoramicrain
     "266001817744179200": {platform: "steam", id: "76561198123365718",displayName: "PillowRL"}, //pillowrl
     //"415964836342792213": {platform: "steam", id: ""}, //tgibbs
     "440249598326341632": {platform: "steam", id: "76561198128189081", displayName: "_Billy"}, //underscorebilly
