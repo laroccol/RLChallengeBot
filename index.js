@@ -181,9 +181,6 @@ async function GetChallengeStandings(actualMap) {
 }
 
 async function UpdateMMRChanges(channel, start) {
-    var totalParseTime = 0;
-    var totalTime = 0;
-    var startTime = GetCurrentTime();
     var standBy = null;
     var percent = 0;
     var count = 0;
@@ -195,9 +192,7 @@ async function UpdateMMRChanges(channel, start) {
         var titleEmbed = new Discord.MessageEmbed()
         .setColor("GOLD");
     for (var key in STEAM_IDS) {
-        var time = GetCurrentTime();
         var rating = await getHTML(key);
-        totalParseTime += GetCurrentTime() - time;
         var player = await FindPlayerByID(key);
         var displayName = STEAM_IDS[key].displayName;
         if (!player) {
@@ -261,9 +256,6 @@ async function UpdateMMRChanges(channel, start) {
 
             });
 
-    totalTime = GetCurrentTime() - startTime;
-    console.log(`Parse Percentage ${totalParseTime / totalTime}`);
-
     var startDate = await GetMMRStartDate();
     titleEmbed.setTitle("MMR GAIN Leaderboard");
     titleEmbed.setDescription(`Since: ${startDate}`);
@@ -279,12 +271,14 @@ async function UpdateMMRChanges(channel, start) {
 
 function getHTML(key) {
     return new Promise(function (resolve, reject) {
+        var currentTime = GetCurrentTime();
         var xhr = new XMLHttpRequest();
         var url = `https://rocketleague.tracker.network/rocket-league/profile/${STEAM_IDS[key].platform}/${STEAM_IDS[key].id}/mmr?playlist=13`;
         xhr.open('get', url, true);
         xhr.onreadystatechange = function () {
             status = xhr.status;
             if (this.readyState == 4 && this.status == 200) {
+                console.log(`HTML: ${GetCurrentTime() - currentTime}`);
                 resolve(getRank(this, "Ranked Standard 3v3"));
             } else if (this.readyState == 4) {
                 resolve(0);
@@ -295,12 +289,14 @@ function getHTML(key) {
 }
 
 function getRank(xml, rankString) {
+    var startTime = GetCurrentTime();
     var xmlDoc = xml.response;
     var start = xmlDoc.indexOf(`"Ranked Standard 3v3"`);
     var rankKnownStart = xmlDoc.indexOf(`"metadata":{},"value":`, start);
     var secondrankKnownStart = xmlDoc.indexOf(`"metadata":{},"value":`, rankKnownStart + 22);
     var rankEnd = xmlDoc.indexOf(`,"displayValue"`, secondrankKnownStart);
     var rating = parseInt(xmlDoc.substring(secondrankKnownStart + 22, rankEnd));
+    console.log(`Get Rank: ${GetCurrentTime() - startTime}`);
 
     return rating;
 }
