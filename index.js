@@ -192,7 +192,9 @@ async function UpdateMMRChanges(channel, start) {
         var titleEmbed = new Discord.MessageEmbed()
         .setColor("GOLD");
     for (var key in STEAM_IDS) {
+        var time = GetCurrentTime();
         var rating = await getHTML(key);
+        console.log(`Parse Time: ${GetCurrentTime() - time}`);
         var player = await FindPlayerByID(key);
         var displayName = STEAM_IDS[key].displayName;
         if (!player) {
@@ -215,9 +217,11 @@ async function UpdateMMRChanges(channel, start) {
         if (start) {
             await Player.updateOne({playerID: key}, {startMMR: rating, currentMMR: 0});
         } else {
+            var currentTime = GetCurrentTime();
             await Player.updateOne({playerID: key}, {currentMMR: (rating - player.startMMR)});
-            console.log(`${rating} : ${player.startMMR}`);
-            console.log(rating - player.startMMR);
+            console.log(`Update Time: ${GetCurrentTime() - currentTime}`);
+            //console.log(`${rating} : ${player.startMMR}`);
+            //console.log(rating - player.startMMR);
         }
         percent += 6.667;
         if (percent > 100) {
