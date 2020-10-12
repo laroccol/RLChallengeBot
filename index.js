@@ -193,7 +193,7 @@ async function UpdateMMRChanges(channel, start) {
         var titleEmbed = new Discord.MessageEmbed()
         .setColor("GOLD");
     for (var key in STEAM_IDS) {
-        var rating = await ajaxRequest(key);
+        var rating = await getHTML(key);
         var player = await FindPlayerByID(key);
         var displayName = STEAM_IDS[key].displayName;
         if (!player) {
@@ -287,6 +287,7 @@ function getHTML(key) {
     });
 }
 
+/*
 async function ajaxRequest(key) {
     var rating = 0;
     var url = `https://rocketleague.tracker.network/rocket-league/profile/${STEAM_IDS[key].platform}/${STEAM_IDS[key].id}/mmr?playlist=13`;
@@ -303,6 +304,7 @@ async function ajaxRequest(key) {
       });
       return rating;
 }
+*/
 
 function getRank(xml, rankString) {
     console.log(xml);
