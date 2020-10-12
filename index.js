@@ -298,17 +298,14 @@ async function ajaxRequest(key) {
       })
       .then(resp => {
           if(resp.status != 200) throw new Error(resp.statusText);
-          if (resp.readyState === 4) {
-            rating = getRank(resp.text(), "Ranked Standard 3v3");
-          }
+          rating = getRank(resp.text(), "Ranked Standard 3v3");
       });
       return rating;
 }
 */
 
 function getRank(xml, rankString) {
-    console.log(xml);
-    var xmlDoc = xml;
+    var xmlDoc = xml.response;
     var start = xmlDoc.indexOf(`"Ranked Standard 3v3"`);
     var rankKnownStart = xmlDoc.indexOf(`"metadata":{},"value":`, start);
     var secondrankKnownStart = xmlDoc.indexOf(`"metadata":{},"value":`, rankKnownStart + 22);
