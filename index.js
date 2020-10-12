@@ -297,7 +297,9 @@ async function ajaxRequest(key) {
       })
       .then(resp => {
           if(resp.status != 200) throw new Error(resp.statusText);
-          rating = getRank(resp.text(), "Ranked Standard 3v3");
+          if (resp.readyState === 4) {
+            rating = getRank(resp.text(), "Ranked Standard 3v3");
+          }
       });
       return rating;
 }
