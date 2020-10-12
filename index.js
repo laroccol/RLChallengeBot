@@ -303,7 +303,7 @@ async function ajaxRequest(key) {
 }
 
 function getRank(xml, rankString) {
-    var xmlDoc = xml.response;
+    var xmlDoc = xml;
     var start = xmlDoc.indexOf(`"Ranked Standard 3v3"`);
     var rankKnownStart = xmlDoc.indexOf(`"metadata":{},"value":`, start);
     var secondrankKnownStart = xmlDoc.indexOf(`"metadata":{},"value":`, rankKnownStart + 22);
