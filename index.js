@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Player = require('./models/player');
 const Map = require('./models/map')
 var XMLHttpRequest = require('xhr2');
+var fetch = require('node-fetch');
 
 const bot = new Discord.Client({disableEveryone: true});
 
