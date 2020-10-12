@@ -291,7 +291,7 @@ async function ajaxRequest(key) {
     var rating = 0;
     var url = `https://rocketleague.tracker.network/rocket-league/profile/${STEAM_IDS[key].platform}/${STEAM_IDS[key].id}/mmr?playlist=13`;
     await fetch(url, {
-        method: GET,
+        method: "GET",
         headers: {'Content-Type': 'application/json'},
         //credentials: 'same-origin'
       })
