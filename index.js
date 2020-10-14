@@ -547,11 +547,11 @@ bot.on("message", async (message) => {
             if (messageArray.length === 2) {
                 await GetPlayerTime(message.member.user.id, messageArray[1], message.channel);
             }
-        } else if (message.content.startsWith(`${PREFIX}mmr`)) {
+        } else if (message.content.startsWith(`${PREFIX}top5`)) {
             if (messageArray.length === 1) {
                 await UpdateMMRChanges(message.channel, false, 5);
             }
-        } else if (message.content.startsWith(`${PREFIX}mmr1`)) {
+        } else if (message.content.startsWith(`${PREFIX}leaderboard`)) {
             if (messageArray.length === 1) {
                 await UpdateMMRChanges(message.channel, false, Object.keys(STEAM_IDS).length);
             }
