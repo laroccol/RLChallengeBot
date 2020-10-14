@@ -181,7 +181,7 @@ async function GetChallengeStandings(actualMap) {
     return standings;
 }
 
-async function UpdateMMRChanges(channel, start) {
+async function UpdateMMRChanges(channel, start, places) {
     var standBy = null;
     var percent = 0;
     var count = 0;
@@ -243,13 +243,13 @@ async function UpdateMMRChanges(channel, start) {
                 if (res.length === 0) {
                     embed.setColor("RED");
                     embed.addField("No Data Found", "There are either no entries or something went wrong");
-                } else if (res.length < 5) {
+                } else if (res.length < places) {
                     for (i = 0; i < res.length; i++) {
                         embed.setColor("GOLD");
                         embed.addField(`${i + 1}. ${res[i].displayName}`, `${res[i].currentMMR}`);
                     }
                 } else {
-                    for (i = 0; i < 5; i++) {
+                    for (i = 0; i < places; i++) {
                         embed.setColor("GOLD");
                         embed.addField(`${i + 1}. ${res[i].displayName}`, `${res[i].currentMMR}`);
                     }
@@ -549,7 +549,11 @@ bot.on("message", async (message) => {
             }
         } else if (message.content.startsWith(`${PREFIX}mmr`)) {
             if (messageArray.length === 1) {
-                await UpdateMMRChanges(message.channel, false);
+                await UpdateMMRChanges(message.channel, false, 5);
+            }
+        } else if (message.content.startsWith(`${PREFIX}mmr1`)) {
+            if (messageArray.length === 1) {
+                await UpdateMMRChanges(message.channel, false, Object.keys(STEAM_IDS).length);
             }
         } else if (message.content.startsWith(`${PREFIX}mymmr`)) {
             if (messageArray.length === 1) {
@@ -557,7 +561,7 @@ bot.on("message", async (message) => {
             }
         } else if (message.content.startsWith(`${PREFIX}start`)) {
             if (messageArray.length === 1 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
-                await UpdateMMRChanges(message.channel, true);
+                await UpdateMMRChanges(message.channel, true, 5);
             } else {
                 if (message.member.permissions.has("ADMINISTRATOR")) {
                     message.channel.send(CreateErrorEmbed("Invalid format"));
