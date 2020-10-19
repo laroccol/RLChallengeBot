@@ -511,6 +511,7 @@ async function EndCycle(channel) {
             }
         }
     }
+    await UpdateMMR(false);
     var mmrStandings = await GetMMRStandings();
     if (mmrStandings) {
         var embed = CreateStandingsEmbed(`MMR Results`);
@@ -537,6 +538,34 @@ async function AddPointsToPlayer(player, inPoints) {
         var newPoints = player.points + Math.round(inPoints * multiplier);
         await Player.updateOne({ playerID: id}, { points: newPoints});
     }
+}
+
+async function GetPointsStandings(channel) {
+    myString = `points`;
+    var standings = await Player.aggregate([{
+        "$match": {
+            [myString]: { $exists: true}
+        }
+    }, {
+        "$sort": {
+            [myString]: 1
+        }
+    }]);
+
+    let embed = new Discord.MessageEmbed()
+        .setTitle(`Points leaderboard`);
+
+    if (!standings || standings.length === 0) {
+        embed.setColor("RED");
+        embed.addField("No Data Found", "There are either no entries or something went wrong");
+    } else {
+        for (i = 0; i < standings.length; i++) {
+            var displayValue = standings[i].points;
+            embed.setColor("GOLD");
+            embed.addField(`${i + 1}. ${standings[i].displayName}`, displayValue);
+        }
+    }
+    channel.send(embed);
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -584,7 +613,7 @@ bot.on("message", async (message) => {
         //GetPlayerTime(message.member.user.id, messageArray[0]);
         if (message.content.startsWith(`${PREFIX}standings`)) {
             if (messageArray.length === 2) {
-                await GenerateLeaderboard(messageArray[1], message.channel);
+                await GetPointsStandings(message.channel);
             }
         } else if (message.content.startsWith(`${PREFIX}get`)) {
             if (messageArray.length === 2) {
@@ -621,6 +650,10 @@ bot.on("message", async (message) => {
                 } else {
                     message.channel.send(CreateErrorEmbed("You must be an Admin to start"));
                 }
+            }
+        } else if (message.content.startsWith(`${PREFIX}points`)) {
+            if (messageArray.length === 1) {
+
             }
         }
     }
