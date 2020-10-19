@@ -501,7 +501,7 @@ async function EndCycle(channel) {
                 for (const player of standings) {
                     var points = POINTS_DISTRIBUTION[count];
                     await AddPointsToPlayer(player, points);
-                    embed.addField(`${count + 1}. ${player.displayName}`, `${points}`);
+                    embed.addField(`${count + 1}. ${player.displayName} - ${points} points`, `${parseChallengeValue(player.times[challenge.mapName], challenge.mapName)}`);
                     if (count >= 2) {
                         break;
                     }
