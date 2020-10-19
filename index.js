@@ -548,7 +548,7 @@ async function GetPointsStandings(channel) {
         }
     }, {
         "$sort": {
-            [myString]: 1
+            [myString]: -1
         }
     }]);
 
