@@ -203,44 +203,7 @@ async function UpdateMMRChanges(channel, start, places) {
         var embed = new Discord.MessageEmbed();
         var titleEmbed = new Discord.MessageEmbed()
         .setColor("GOLD");
-    for (var key in STEAM_IDS) {
-        var rating = await getHTML(key);
-        var player = await FindPlayerByID(key);
-        var displayName = STEAM_IDS[key].displayName;
-        if (!player) {
-            let newPlayer = new Player({
-                _id: mongoose.Types.ObjectId(),
-                playerID: key,
-                displayName: displayName,
-                times: {_origin: 1},
-                startMMR: 0,
-                currentMMR: 0,
-                points: 0
-            });
-        
-            await newPlayer.save()
-                .then(result => player = result)
-                .catch(err => console.error(err));
-        
-            console.log("A player has been added to the database!");
-        }
-        if (start) {
-            await Player.updateOne({playerID: key}, {startMMR: rating, currentMMR: 0});
-        } else {
-            await Player.updateOne({playerID: key}, {currentMMR: (rating - player.startMMR)});
-            //console.log(`${rating} : ${player.startMMR}`);
-            //console.log(rating - player.startMMR);
-        }
-        percent += 6.667;
-        if (percent > 100) {
-            percent = 100;
-        }
-        count += 1
-        if (count === 3) {
-            await standBy.edit(`Please Stand By ${Math.floor(percent)}%`);
-            count = 0;
-        }
-    }
+    await UpdateMMR(start);
 
     if (start) {
         var date = new Date();
@@ -337,6 +300,53 @@ async function GetMMRStartDate() {
         return map.startDate;
     }
     return "Error";
+}
+
+async function UpdateMMR(start) {
+    for (var key in STEAM_IDS) {
+        var rating = await getHTML(key);
+        var player = await FindPlayerByID(key);
+        var displayName = STEAM_IDS[key].displayName;
+        if (!player) {
+            let newPlayer = new Player({
+                _id: mongoose.Types.ObjectId(),
+                playerID: key,
+                displayName: displayName,
+                times: {_origin: 1},
+                startMMR: 0,
+                currentMMR: 0,
+                points: 0
+            });
+        
+            await newPlayer.save()
+                .then(result => player = result)
+                .catch(err => console.error(err));
+        
+            console.log("A player has been added to the database!");
+        }
+        if (start) {
+            await Player.updateOne({playerID: key}, {startMMR: rating, currentMMR: 0});
+        } else {
+            await Player.updateOne({playerID: key}, {currentMMR: (rating - player.startMMR)});
+            //console.log(`${rating} : ${player.startMMR}`);
+            //console.log(rating - player.startMMR);
+        }
+        percent += 6.667;
+        if (percent > 100) {
+            percent = 100;
+        }
+        count += 1
+        if (count === 3) {
+            await standBy.edit(`Please Stand By ${Math.floor(percent)}%`);
+            count = 0;
+        }
+    }
+}
+
+async function GetMMRStandings() {
+    var players = await Player.find({startMMR: { $gte: 1}})
+            .sort([['currentMMR', 'descending']]);
+    return players;
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -484,7 +494,7 @@ async function EndCycle(channel) {
     channel.send(CreateStandingsEmbed("Results"));
     if (challenges) {
         for (const challenge of challenges) {
-            var embed = CreateStandingsEmbed(`${challenge.mapName}`)
+            var embed = CreateStandingsEmbed(`${challenge.mapName}`);
             var standings = await GetChallengeStandings(challenge);
             if (standings) {
                 var count = 0;
@@ -500,6 +510,21 @@ async function EndCycle(channel) {
                 channel.send(embed);
             }
         }
+    }
+    var mmrStandings = await GetMMRStandings();
+    if (mmrStandings) {
+        var embed = CreateStandingsEmbed(`${challenge.mapName}`);
+        var count = 0;
+        for (const player of mmrStandings) {
+            var points = POINTS_DISTRIBUTION[count];
+            await AddPointsToPlayer(player, points);
+            embed.addField(`${count + 1}. ${player.displayName}`, `${points}`);
+            if (count >= 2) {
+                break;
+            }
+            count += 1;
+        }
+        channel.send(embed);
     }
 }
 
