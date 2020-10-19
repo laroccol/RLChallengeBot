@@ -66,6 +66,14 @@ function CreateSuccessEmbed(title) {
     return embed;
 }
 
+function CreateStandingsEmbed(title) {
+    let embed = new Discord.MessageEmbed()
+        .setTitle(title)
+        .setColor("GOLD");
+
+    return embed;
+}
+
 // Map
 // -------------------------------------------------------------------------------------------------
 async function AddMapToDatabase(name, newInputType, newSortOrder, channel) {
@@ -473,19 +481,23 @@ function parseInput(value, inputType) {
 
 async function EndCycle(channel) {
     var challenges = await GetAllChallenges();
-    var embed = CreateSuccessEmbed("Results");
+    channel.send(CreateStandingsEmbed("Results"));
     if (challenges) {
         for (const challenge of challenges) {
+            var embed = CreateStandingsEmbed(`${map.mapName}`)
             var standings = await GetChallengeStandings(challenge);
             if (standings) {
                 count = 0;
                 for (const player of standings) {
-                    await AddPointsToPlayer(player, POINTS_DISTRIBUTION[count]);
+                    var points = POINTS_DISTRIBUTION[count];
+                    await AddPointsToPlayer(player, points);
+                    embed.addField(`${count + 1}. ${player.displayName}`, `${points}`);
                     if (count >= 3) {
                         break;
                     }
                     count += 1;
                 }
+                channel.send(embed);
             }
         }
     }
