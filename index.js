@@ -193,15 +193,8 @@ async function GetChallengeStandings(actualMap) {
 }
 
 async function UpdateMMRChanges(channel, start, places) {
-    var standBy = null;
-    var percent = 0;
-    var count = 0;
-    channel.send("Please Stand By 0%")
-        .then(msg => {standBy = msg})
-        .catch(err => console.error(err));
-
-        var embed = new Discord.MessageEmbed();
-        var titleEmbed = new Discord.MessageEmbed()
+    var embed = new Discord.MessageEmbed();
+    var titleEmbed = new Discord.MessageEmbed()
         .setColor("GOLD");
     await UpdateMMR(start);
 
@@ -301,7 +294,7 @@ async function GetMMRStartDate() {
     return "Error";
 }
 
-async function UpdateMMR(start) {
+async function UpdateMMR(start, channel) {
     var standBy = null;
     var percent = 0;
     var count = 0;
