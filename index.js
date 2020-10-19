@@ -484,7 +484,7 @@ async function EndCycle(channel) {
     channel.send(CreateStandingsEmbed("Results"));
     if (challenges) {
         for (const challenge of challenges) {
-            var embed = CreateStandingsEmbed(`${map.mapName}`)
+            var embed = CreateStandingsEmbed(`${challenge.mapName}`)
             var standings = await GetChallengeStandings(challenge);
             if (standings) {
                 count = 0;
