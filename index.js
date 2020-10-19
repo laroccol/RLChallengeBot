@@ -234,7 +234,6 @@ async function UpdateMMRChanges(channel, start, places) {
     var startDate = await GetMMRStartDate();
     titleEmbed.setTitle("MMR GAIN Leaderboard");
     titleEmbed.setDescription(`Since: ${startDate}`);
-    standBy.delete({ timeout: 0 });
     channel.send(titleEmbed);
     channel.send(embed);
 }
@@ -303,6 +302,12 @@ async function GetMMRStartDate() {
 }
 
 async function UpdateMMR(start) {
+    var standBy = null;
+    var percent = 0;
+    var count = 0;
+    channel.send("Please Stand By 0%")
+        .then(msg => {standBy = msg})
+        .catch(err => console.error(err));
     for (var key in STEAM_IDS) {
         var rating = await getHTML(key);
         var player = await FindPlayerByID(key);
@@ -341,6 +346,8 @@ async function UpdateMMR(start) {
             count = 0;
         }
     }
+
+    standBy.delete({ timeout: 0 });
 }
 
 async function GetMMRStandings() {
@@ -511,7 +518,7 @@ async function EndCycle(channel) {
             }
         }
     }
-    await UpdateMMR(false);
+    await UpdateMMR(false, channel);
     var mmrStandings = await GetMMRStandings();
     if (mmrStandings) {
         var embed = CreateStandingsEmbed(`MMR Results`);
