@@ -513,7 +513,7 @@ async function EndCycle(channel) {
     }
     var mmrStandings = await GetMMRStandings();
     if (mmrStandings) {
-        var embed = CreateStandingsEmbed(`${challenge.mapName}`);
+        var embed = CreateStandingsEmbed(`MMR Results`);
         var count = 0;
         for (const player of mmrStandings) {
             var points = POINTS_DISTRIBUTION[count];
