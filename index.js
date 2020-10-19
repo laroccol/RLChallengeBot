@@ -487,7 +487,7 @@ async function EndCycle(channel) {
             var embed = CreateStandingsEmbed(`${challenge.mapName}`)
             var standings = await GetChallengeStandings(challenge);
             if (standings) {
-                count = 0;
+                var count = 0;
                 for (const player of standings) {
                     var points = POINTS_DISTRIBUTION[count];
                     await AddPointsToPlayer(player, points);
