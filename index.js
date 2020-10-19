@@ -613,7 +613,7 @@ bot.on("message", async (message) => {
         //GetPlayerTime(message.member.user.id, messageArray[0]);
         if (message.content.startsWith(`${PREFIX}standings`)) {
             if (messageArray.length === 2) {
-                await GetPointsStandings(message.channel);
+                await GenerateLeaderboard(messageArray[1], message.channel);
             }
         } else if (message.content.startsWith(`${PREFIX}get`)) {
             if (messageArray.length === 2) {
@@ -653,7 +653,7 @@ bot.on("message", async (message) => {
             }
         } else if (message.content.startsWith(`${PREFIX}points`)) {
             if (messageArray.length === 1) {
-
+                await GetPointsStandings(message.channel);
             }
         }
     }
