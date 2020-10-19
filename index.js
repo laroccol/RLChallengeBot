@@ -196,7 +196,7 @@ async function UpdateMMRChanges(channel, start, places) {
     var embed = new Discord.MessageEmbed();
     var titleEmbed = new Discord.MessageEmbed()
         .setColor("GOLD");
-    await UpdateMMR(start);
+    await UpdateMMR(start, channel);
 
     if (start) {
         var date = new Date();
