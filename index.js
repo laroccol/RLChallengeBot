@@ -521,7 +521,7 @@ async function EndCycle(channel) {
         for (const player of mmrStandings) {
             var points = POINTS_DISTRIBUTION[count];
             await AddPointsToPlayer(player, points);
-            embed.addField(`${count + 1}. ${player.displayName}`, `${points}`);
+            embed.addField(`${count + 1}. ${player.displayName} - ${points} points`, `${player.currentMMR}`);
             if (count >= 2) {
                 break;
             }
