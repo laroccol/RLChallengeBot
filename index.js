@@ -19,6 +19,9 @@ const MMR_CHANNEL_ID = "761050538300801056";
 const INPUT_TYPES = ["time", "score"];
 const SORT_ORDERS = [1, -1];
 
+const POINTS_DISTRIBUTION = [100, 50, 25];
+const CONSOLE_MULTIPLIER = 1.5;
+
 const STEAM_IDS = {
     "187022616933040128": {platform: "steam", id: "76561198107782432", displayName: "Alerath"}, //alerath
     "428392024014716939": {platform: "steam", id: "76561198278263410", displayName: "BubblyReaper"}, //bubblyreaper
@@ -477,8 +480,8 @@ async function EndCycle(channel) {
             if (standings) {
                 count = 0;
                 for (const player of standings) {
-                    await AddPointsToPlayer(player, 100);
-                    if (count >= 2) {
+                    await AddPointsToPlayer(player, POINTS_DISTRIBUTION[count]);
+                    if (count >= 3) {
                         break;
                     }
                     count += 1;
@@ -491,7 +494,10 @@ async function EndCycle(channel) {
 async function AddPointsToPlayer(player, inPoints) {
     if (player) {
         var id = player.playerID;
-        var newPoints = player.points + inPoints;
+        var isConsole = STEAM_IDS[id].platform == "xbl";
+        var multiplier = 1;
+        if (isConsole) multipler = CONSOLE_MULTIPLIER;
+        var newPoints = player.points + Math.round(inPoints * multiplier);
         await Player.updateOne({ playerID: id}, { points: newPoints});
     }
 }
