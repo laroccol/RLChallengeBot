@@ -492,7 +492,7 @@ async function EndCycle(channel) {
                     var points = POINTS_DISTRIBUTION[count];
                     await AddPointsToPlayer(player, points);
                     embed.addField(`${count + 1}. ${player.displayName}`, `${points}`);
-                    if (count >= 3) {
+                    if (count >= 2) {
                         break;
                     }
                     count += 1;
