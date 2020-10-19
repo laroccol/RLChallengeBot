@@ -508,7 +508,7 @@ async function EndCycle(channel) {
                     count += 1;
                 }
                 channel.send(embed);
-                RemoveMapFromDatabase(challenge.mapName, channel);
+                await RemoveMapFromDatabase(challenge.mapName, channel);
             }
         }
     }
