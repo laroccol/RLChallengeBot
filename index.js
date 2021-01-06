@@ -570,6 +570,15 @@ async function GetPointsStandings(channel) {
     channel.send(embed);
 }
 
+async function ResetPoints(channel)
+{
+    for (var key in STEAM_IDS)
+    {
+        await Player.updateOne({playerID: key}, {points: 0});
+    }
+    channel.send(CreateSuccessEmbed("Points have been reset"));
+}
+
 // -------------------------------------------------------------------------------------------------
 
 //Event Handlers
@@ -657,6 +666,9 @@ bot.on("message", async (message) => {
             if (messageArray.length === 1) {
                 await GetPointsStandings(message.channel);
             }
+        } else if (message.content.startsWith(`${PREFIX}resetpoints`))
+        {
+            ResetPoints(message.channel);
         }
     }
 
