@@ -355,8 +355,8 @@ async function GetAllMMRChanges(channel) {
         .catch(err => console.error(err));
     for (var key in STEAM_IDS) {
         var rating = await GetCurrentMMR(key);
-        var threesRating = rating.threes - player.startMMR3s;
         var player = await FindPlayerByID(key);
+        var threesRating = rating.threes - player.startMMR3s;
         var displayName = STEAM_IDS[key].displayName;
         if (!player) {
             await AddPlayerToDatabase(key, displayName);
