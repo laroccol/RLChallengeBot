@@ -262,6 +262,7 @@ async function GetChallengeStandings(actualMap) {
 function GetCurrentMMR(key) {
     return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
+        xhr.responseType = "document";
         var url = `https://rocketleague.tracker.network/rocket-league/profile/${STEAM_IDS[key].platform}/${STEAM_IDS[key].id}/overview`;
         xhr.open('get', url, true);
         xhr.onreadystatechange = function () {
