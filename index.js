@@ -377,6 +377,8 @@ async function GetAllMMRChanges(channel) {
     }
 
     standBy.delete({ timeout: 0 });
+
+    return changes;
 }
 
 // -------------------------------------------------------------------------------------------------
