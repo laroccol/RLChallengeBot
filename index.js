@@ -561,8 +561,8 @@ async function onStart(channel) {
     await Map.updateOne({mapName: "Ub&7|Bh$5(w?P2m"}, {startDate: date.toLocaleString("en-US", {timeZone: "America/Chicago"})});
 
     for (var key in STEAM_IDS) {
-        var player = FindPlayerByID(key);
-        var rating = GetCurrentMMR(key);
+        var player = await FindPlayerByID(key);
+        var rating = await GetCurrentMMR(key);
         if (!player) {
             await AddPlayerToDatabase(key, STEAM_IDS[key].displayName);
         }
