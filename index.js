@@ -304,7 +304,7 @@ function getRank(xml) {
 }
 
 function getThreesRank(xmlDoc) {
-    var start = xmlDoc.indexOf(`"Ranked Standard 3v3"`);
+    var start = xmlDoc.indexOf("Ranked Standard 3v3");
     var rankKnownStart = xmlDoc.indexOf(`class="value"`, start);
     var rankEnd = xmlDoc.indexOf(`</div>`, rankKnownStart);
     var rating = parseInt(xmlDoc.substring(rankKnownStart + 30, rankEnd));
@@ -312,8 +312,8 @@ function getThreesRank(xmlDoc) {
     return rating;
 }
 
-function getTwosRank(xml) {
-    var start = xmlDoc.indexOf(`"Ranked Doubles 2v2"`);
+function getTwosRank(xmlDoc) {
+    var start = xmlDoc.indexOf("Ranked Doubles 2v2");
     var rankKnownStart = xmlDoc.indexOf(`class="value"`, start);
     var rankEnd = xmlDoc.indexOf(`</div>`, rankKnownStart);
     var rating = parseInt(xmlDoc.substring(rankKnownStart + 30, rankEnd));
@@ -321,8 +321,8 @@ function getTwosRank(xml) {
     return rating;
 }
 
-function getOnesRank(xml) {
-    var start = xmlDoc.indexOf(`"Ranked Duel 1v1"`);
+function getOnesRank(xmlDoc) {
+    var start = xmlDoc.indexOf("Ranked Duel 1v1");
     var rankKnownStart = xmlDoc.indexOf(`class="value"`, start);
     var rankEnd = xmlDoc.indexOf(`</div>`, rankKnownStart);
     var rating = parseInt(xmlDoc.substring(rankKnownStart + 30, rankEnd));
