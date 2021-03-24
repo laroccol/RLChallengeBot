@@ -5,8 +5,9 @@ const playerSchema = mongoose.Schema({
     playerID: String,
     displayName: String,
     times: Object,
-    startMMR: Number,
-    currentMMR: Number,
+    startMMR1s: Number,
+    startMMR2s: Number,
+    startMMR3s: Number,
     points: Number
 });
 
