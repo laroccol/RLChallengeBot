@@ -653,7 +653,7 @@ bot.on("message", async (message) => {
                 await GenerateLeaderboard(messageArray[1], message.channel);
             }
         } else if (message.content.startsWith(`${PREFIX}debug`)) {
-            await onDebug(channel);
+            await onDebug(message.channel);
         } else if (message.content.startsWith(`${PREFIX}get`)) {
             if (messageArray.length === 2) {
                 await GetPlayerTime(message.member.user.id, messageArray[1], message.channel);
