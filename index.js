@@ -270,7 +270,7 @@ function GetCurrentMMR(key) {
                 console.log(getRank(this));
                 resolve(getRank(this));
             } else if (this.readyState == 4) {
-                resolve(0);
+                resolve(null);
             }
         };
         xhr.send();
@@ -685,19 +685,19 @@ bot.on("message", async (message) => {
             }
         } else if (message.content.startsWith(`${PREFIX}top5`)) {
             if (messageArray.length === 1) {
-                await UpdateMMRChanges(message.channel, false, 5);
+                await onTop5(message.channel);
             }
         } else if (message.content.startsWith(`${PREFIX}leaderboard`)) {
             if (messageArray.length === 1) {
-                await UpdateMMRChanges(message.channel, false, Object.keys(STEAM_IDS).length);
+                await onLeaderboard(message.channel);
             }
         } else if (message.content.startsWith(`${PREFIX}mymmr`)) {
             if (messageArray.length === 1) {
-                await GetIndividualMMRChange(message.member.user.id, message.channel);
+                await onMyMMR(message.member.user.id, message.channel);
             }
         } else if (message.content.startsWith(`${PREFIX}start`)) {
             if (messageArray.length === 1 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
-                await UpdateMMRChanges(message.channel, true, 5);
+                await onStart(message.channel);
             } else {
                 if (message.member.permissions.has("ADMINISTRATOR")) {
                     message.channel.send(CreateErrorEmbed("Invalid format"));
@@ -707,7 +707,7 @@ bot.on("message", async (message) => {
             }
         } else if (message.content.startsWith(`${PREFIX}end`)) {
             if (messageArray.length === 1 && (message.member.permissions.has("ADMINISTRATOR") || message.member.user.id === "145013723935932416")) {
-                await EndCycle(message.channel);
+                await onEnd(message.channel);
             } else {
                 if (message.member.permissions.has("ADMINISTRATOR")) {
                     message.channel.send(CreateErrorEmbed("Invalid format"));
