@@ -607,7 +607,7 @@ async function onMyMMR(memberID, channel) {
 }
 
 async function onDebug(channel) {
-    await GetCurrentMMR("76561198052637143");
+    await GetCurrentMMR("145013723935932416");
 }
 
 bot.on("ready", async () => {
