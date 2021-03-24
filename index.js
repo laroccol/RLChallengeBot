@@ -262,13 +262,12 @@ async function GetChallengeStandings(actualMap) {
 function GetCurrentMMR(key) {
     return new Promise(function (resolve, reject) {
         var xhr = new XMLHttpRequest();
-        xhr.responseType = "document";
         var url = `https://rocketleague.tracker.network/rocket-league/profile/${STEAM_IDS[key].platform}/${STEAM_IDS[key].id}/overview`;
         xhr.open('get', url, true);
         xhr.onreadystatechange = function () {
             status = xhr.status;
             if (this.readyState == 4 && this.status == 200) {
-                console.log(this);
+                console.log(getRank(this));
                 resolve(getRank(this));
             } else if (this.readyState == 4) {
                 resolve(0);
@@ -297,11 +296,36 @@ async function ajaxRequest(key) {
 
 function getRank(xml) {
     var xmlDoc = xml.response;
+    var threes = getThreesRank(xmlDoc);
+    var twos = getTwosRank(xmlDoc);
+    var ones = getOnesRank(xmlDoc);
+    
+    return {threes: threes, twos: twos, ones: ones};
+}
+
+function getThreesRank(xmlDoc) {
     var start = xmlDoc.indexOf(`"Ranked Standard 3v3"`);
-    var rankKnownStart = xmlDoc.indexOf(`"metadata":{},"value":`, start);
-    var secondrankKnownStart = xmlDoc.indexOf(`"metadata":{},"value":`, rankKnownStart + 22);
-    var rankEnd = xmlDoc.indexOf(`,"displayValue"`, secondrankKnownStart);
-    var rating = parseInt(xmlDoc.substring(secondrankKnownStart + 22, rankEnd));
+    var rankKnownStart = xmlDoc.indexOf(`class="value"`, start);
+    var rankEnd = xmlDoc.indexOf(`</div>`, rankKnownStart);
+    var rating = parseInt(xmlDoc.substring(rankKnownStart + 30, rankEnd));
+
+    return rating;
+}
+
+function getTwosRank(xml) {
+    var start = xmlDoc.indexOf(`"Ranked Doubles 2v2"`);
+    var rankKnownStart = xmlDoc.indexOf(`class="value"`, start);
+    var rankEnd = xmlDoc.indexOf(`</div>`, rankKnownStart);
+    var rating = parseInt(xmlDoc.substring(rankKnownStart + 30, rankEnd));
+
+    return rating;
+}
+
+function getOnesRank(xml) {
+    var start = xmlDoc.indexOf(`"Ranked Duel 1v1"`);
+    var rankKnownStart = xmlDoc.indexOf(`class="value"`, start);
+    var rankEnd = xmlDoc.indexOf(`</div>`, rankKnownStart);
+    var rating = parseInt(xmlDoc.substring(rankKnownStart + 30, rankEnd));
 
     return rating;
 }
