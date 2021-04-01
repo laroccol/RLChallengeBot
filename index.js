@@ -185,7 +185,7 @@ async function UpdateMMRChanges(channel, places) {
     var titleEmbed = new Discord.MessageEmbed().setColor("GOLD");
     var changes = await GetAllMMRChanges(channel);
     var sortedChanges = changes.sort((a, b) => {
-        return a.threes > b.threes ? 1 : -1;
+        return a.threes < b.threes ? 1 : -1;
     });
 
     if (sortedChanges.length === 0) {
