@@ -307,6 +307,7 @@ function getThreesRank(xmlDoc) {
     var start = xmlDoc.indexOf("Ranked Standard 3v3");
     var rankKnownStart = xmlDoc.indexOf(`class="value"`, start);
     var rankEnd = xmlDoc.indexOf(`</div>`, rankKnownStart);
+    console.log(xmlDoc.substring(rankKnownStart + 30, rankEnd).replace(",", ""));
     var rating = parseInt(xmlDoc.substring(rankKnownStart + 30, rankEnd).replace(",", ""));
 
     return rating;
